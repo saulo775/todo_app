@@ -4,7 +4,7 @@ class Item {
 
   Item({this.title, this.done});
 
-    Item.fromJason(Map<String, dynamic> json){
+    Item.fromJson(Map<String, dynamic> json){
       title = json['title'];
       done = json['done'];
     }

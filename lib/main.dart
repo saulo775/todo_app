@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'models/item.dart';
 
 
@@ -29,9 +31,9 @@ class HomePage extends StatefulWidget {
 
   HomePage(){
     items = [];
-    items.add(Item(title:"Item 1", done: false));
-    items.add(Item(title:"Item 2", done: true));
-    items.add(Item(title:"Item 3", done: false));
+    // items.add(Item(title:"Item 1", done: false));
+    // items.add(Item(title:"Item 2", done: true));
+    // items.add(Item(title:"Item 3", done: false));
 
   }
 
@@ -60,6 +62,22 @@ class _HomePageState extends State<HomePage> {
     setState((){
       widget.items.removeAt(index);
     });
+  }
+
+  Future load() async {
+    var prefs = await SharedPreferences.getInstance();
+    var data = prefs.getString('data');
+
+    if (data != null){
+      Iterable decoded = jsonDecode(data);
+      List<Item> result = decoded.map((x)=> Item.fromJson(x)).toList();
+      setState((){
+        widget.items = result;
+      });
+    }
+  }
+  _HomePageState(){
+    load();
   }
 
   @override
@@ -102,7 +120,6 @@ class _HomePageState extends State<HomePage> {
               color: Colors.red.withOpacity(0.2),
             ),
             onDismissed: (direction){
-              print(direction);
               remove(index);
             }
           );
